@@ -1,0 +1,61 @@
+# RUN: not %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load %custom_ra -regalloc=custom-ra -custom-ra-trace=%t.trace -stop-after=virtregrewriter %s -o - 2>&1 | %FileCheck --check-prefix=ERR %s
+# RUN: %FileCheck --check-prefix=TRACE %s < %t.trace
+
+# ERR: custom-ra: unable to allocate
+# ERR: spilling/splitting is not implemented
+# TRACE: allocation:
+# TRACE: spill-required
+
+--- |
+  define i64 @forced_pressure() {
+  entry:
+    ret i64 0
+  }
+...
+---
+name: forced_pressure
+tracksRegLiveness: true
+body: |
+  bb.0.entry:
+    %0:gr64 = IMPLICIT_DEF
+    %1:gr64 = IMPLICIT_DEF
+    %2:gr64 = IMPLICIT_DEF
+    %3:gr64 = IMPLICIT_DEF
+    %4:gr64 = IMPLICIT_DEF
+    %5:gr64 = IMPLICIT_DEF
+    %6:gr64 = IMPLICIT_DEF
+    %7:gr64 = IMPLICIT_DEF
+    %8:gr64 = IMPLICIT_DEF
+    %9:gr64 = IMPLICIT_DEF
+    %10:gr64 = IMPLICIT_DEF
+    %11:gr64 = IMPLICIT_DEF
+    %12:gr64 = IMPLICIT_DEF
+    %13:gr64 = IMPLICIT_DEF
+    %14:gr64 = IMPLICIT_DEF
+    %15:gr64 = IMPLICIT_DEF
+    %16:gr64 = IMPLICIT_DEF
+    %17:gr64 = IMPLICIT_DEF
+    %18:gr64 = IMPLICIT_DEF
+    %19:gr64 = IMPLICIT_DEF
+    %20:gr64 = ADD64rr %0, %1, implicit-def dead $eflags
+    %21:gr64 = ADD64rr %2, %3, implicit-def dead $eflags
+    %22:gr64 = ADD64rr %4, %5, implicit-def dead $eflags
+    %23:gr64 = ADD64rr %6, %7, implicit-def dead $eflags
+    %24:gr64 = ADD64rr %8, %9, implicit-def dead $eflags
+    %25:gr64 = ADD64rr %10, %11, implicit-def dead $eflags
+    %26:gr64 = ADD64rr %12, %13, implicit-def dead $eflags
+    %27:gr64 = ADD64rr %14, %15, implicit-def dead $eflags
+    %28:gr64 = ADD64rr %16, %17, implicit-def dead $eflags
+    %29:gr64 = ADD64rr %18, %19, implicit-def dead $eflags
+    %30:gr64 = ADD64rr %20, %21, implicit-def dead $eflags
+    %31:gr64 = ADD64rr %22, %23, implicit-def dead $eflags
+    %32:gr64 = ADD64rr %24, %25, implicit-def dead $eflags
+    %33:gr64 = ADD64rr %26, %27, implicit-def dead $eflags
+    %34:gr64 = ADD64rr %28, %29, implicit-def dead $eflags
+    %35:gr64 = ADD64rr %30, %31, implicit-def dead $eflags
+    %36:gr64 = ADD64rr %32, %33, implicit-def dead $eflags
+    %37:gr64 = ADD64rr %35, %36, implicit-def dead $eflags
+    %38:gr64 = ADD64rr %37, %34, implicit-def dead $eflags
+    $rax = COPY %38
+    RET64 $rax
+...

@@ -1,0 +1,5 @@
+build/
+*.dot
+*.trace
+*.log
+benchmark-results.json

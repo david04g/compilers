@@ -1,0 +1,9 @@
+import os
+
+config.llvm_tools_dir = r"@LLVM_TOOLS_BINARY_DIR@"
+config.custom_ra_plugin = r"@CUSTOM_RA_PLUGIN@"
+
+lit_config.load_config(
+    config,
+    os.path.join(r"@CMAKE_CURRENT_SOURCE_DIR@", "test", "lit.cfg.py"),
+)
