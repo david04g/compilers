@@ -23,9 +23,9 @@ body: |
     liveins: $rdi
 
     %0:gr64 = COPY $rdi
-    ADJCALLSTACKDOWN64 0, 0, 0, implicit-def dead $rsp, implicit $rsp
+    ADJCALLSTACKDOWN64 0, 0, 0, implicit-def dead $rsp, implicit-def $ssp, implicit-def $eflags, implicit $rsp, implicit $ssp
     CALL64pcrel32 @callee, csr_64, implicit $rsp, implicit $ssp, implicit-def $rsp, implicit-def $ssp
-    ADJCALLSTACKUP64 0, 0, implicit-def dead $rsp, implicit $rsp
+    ADJCALLSTACKUP64 0, 0, implicit-def dead $rsp, implicit-def $ssp, implicit-def $eflags, implicit $rsp, implicit $ssp
     $rax = COPY %0
     RET64 $rax
 ...

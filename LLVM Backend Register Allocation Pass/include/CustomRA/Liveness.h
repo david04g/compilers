@@ -4,7 +4,7 @@
 #include "CustomRA/Allocation.h"
 
 #include "llvm/ADT/DenseMap.h"
-#include "llvm/ADT/SmallSetVector.h"
+#include "llvm/ADT/SetVector.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/Register.h"
 

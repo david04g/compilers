@@ -26,6 +26,16 @@ using namespace customra;
 
 #define DEBUG_TYPE "custom-ra"
 
+namespace llvm {
+#ifdef _WIN32
+template <>
+__attribute__((dllimport))
+    MachinePassRegistry<RegisterRegAlloc::FunctionPassCtor>
+        RegisterRegAllocBase<RegisterRegAlloc>::Registry;
+#endif
+void initializeCustomRegAllocPass(PassRegistry &);
+}
+
 static cl::opt<bool> CustomRADebug(
     "custom-ra-debug", cl::Hidden,
     cl::desc("Emit custom register allocator trace output"), cl::init(false));
@@ -110,7 +120,8 @@ public:
       OS << "custom-ra: unable to allocate "
          << printReg(Result.FailedVirtReg, TRI) << " in " << MF.getName()
          << ": " << Result.FailureReason;
-      report_fatal_error(OS.str(), false);
+      OS.flush();
+      report_fatal_error(StringRef(Message), false);
     }
 
     LLVM_DEBUG(dbgs() << "custom-ra: allocated " << Result.Plan.size()
