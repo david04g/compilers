@@ -1,0 +1,6 @@
+{
+  "benchmark": "memory_latency",
+  "scheduler": "stall-fill",
+  "min_throughput_percent": 20.0,
+  "requires_valid_schedule": true
+}

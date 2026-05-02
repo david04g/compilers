@@ -1,0 +1,5 @@
+{
+  "benchmark": "barrier",
+  "requires_valid_schedule": true,
+  "barrier_must_not_move": true
+}

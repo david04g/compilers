@@ -1,0 +1,25 @@
+{
+  "latencies": {
+    "ADD": 1,
+    "MUL": 4,
+    "FMA": 4,
+    "LD": 20,
+    "ST": 10,
+    "SFU": 12,
+    "BRA": 2,
+    "BAR": 8,
+    "NOP": 1
+  },
+  "units": {
+    "INT": 1,
+    "FP": 1,
+    "MEM": 1,
+    "SFU": 1,
+    "BRANCH": 1,
+    "NONE": 1024
+  },
+  "warp_size": 32,
+  "issue_width": 1,
+  "max_warps": 8,
+  "sms": 1
+}

@@ -1,0 +1,12 @@
+kernel memory_latency
+warp 0
+
+LD R1, [R10]
+ADD R2, R1, R3
+MUL R20, R21, R22
+FMA R23, R24, R25
+ADD R26, R27, R28
+MUL R29, R30, R31
+SFU R14, R15
+ADD R11, R2, R12
+END

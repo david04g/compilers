@@ -1,0 +1,5 @@
+{
+  "benchmark": "dependency_chain",
+  "max_throughput_percent": 10.0,
+  "requires_valid_schedule": true
+}

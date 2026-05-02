@@ -1,0 +1,6 @@
+build/
+results/**/*.json
+results/**/*.asm
+results/**/*.dot
+results/benchmarks/
+results/scheduler_compare/
