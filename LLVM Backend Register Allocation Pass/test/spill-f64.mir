@@ -1,0 +1,491 @@
+# RUN: rm -f "%t.trace"
+# RUN: %llc -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -custom-ra-trace="%t.trace" -start-after=finalize-isel -stop-after=virtregrewriter "%s" -o "%t.mir"
+# RUN: %FileCheck --check-prefix=TRACE "%s" < "%t.trace"
+# RUN: %FileCheck --check-prefix=MIR "%s" < "%t.mir"
+# RUN: %llc -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -start-after=finalize-isel -stop-after=virtregrewriter "%s" -o "%t.second.mir"
+# RUN: diff "%t.mir" "%t.second.mir"
+# TRACE: spill: round=
+# TRACE-SAME: stack-slot=fi#
+# TRACE: allocation-complete:
+# MIR: type: spill-slot
+# MIR: body:
+# MIR-NOT: %{{[0-9]+}}:
+# MIR: %stack.
+
+--- |
+  ; Generated pressure regression
+  source_filename = "pressure.ll"
+  target datalayout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+
+  declare void @barrier()
+
+  define double @work(ptr %p, i64 %count) {
+  entry:
+    %p01 = bitcast ptr %p to ptr
+    %v0 = load volatile double, ptr %p01, align 8
+    %p1 = getelementptr double, ptr %p, i64 1
+    %v1 = load volatile double, ptr %p1, align 8
+    %p2 = getelementptr double, ptr %p, i64 2
+    %v2 = load volatile double, ptr %p2, align 8
+    %p3 = getelementptr double, ptr %p, i64 3
+    %v3 = load volatile double, ptr %p3, align 8
+    %p4 = getelementptr double, ptr %p, i64 4
+    %v4 = load volatile double, ptr %p4, align 8
+    %p5 = getelementptr double, ptr %p, i64 5
+    %v5 = load volatile double, ptr %p5, align 8
+    %p6 = getelementptr double, ptr %p, i64 6
+    %v6 = load volatile double, ptr %p6, align 8
+    %p7 = getelementptr double, ptr %p, i64 7
+    %v7 = load volatile double, ptr %p7, align 8
+    %p8 = getelementptr double, ptr %p, i64 8
+    %v8 = load volatile double, ptr %p8, align 8
+    %p9 = getelementptr double, ptr %p, i64 9
+    %v9 = load volatile double, ptr %p9, align 8
+    %p10 = getelementptr double, ptr %p, i64 10
+    %v10 = load volatile double, ptr %p10, align 8
+    %p11 = getelementptr double, ptr %p, i64 11
+    %v11 = load volatile double, ptr %p11, align 8
+    %p12 = getelementptr double, ptr %p, i64 12
+    %v12 = load volatile double, ptr %p12, align 8
+    %p13 = getelementptr double, ptr %p, i64 13
+    %v13 = load volatile double, ptr %p13, align 8
+    %p14 = getelementptr double, ptr %p, i64 14
+    %v14 = load volatile double, ptr %p14, align 8
+    %p15 = getelementptr double, ptr %p, i64 15
+    %v15 = load volatile double, ptr %p15, align 8
+    %p16 = getelementptr double, ptr %p, i64 16
+    %v16 = load volatile double, ptr %p16, align 8
+    %p17 = getelementptr double, ptr %p, i64 17
+    %v17 = load volatile double, ptr %p17, align 8
+    %p18 = getelementptr double, ptr %p, i64 18
+    %v18 = load volatile double, ptr %p18, align 8
+    %p19 = getelementptr double, ptr %p, i64 19
+    %v19 = load volatile double, ptr %p19, align 8
+    %p20 = getelementptr double, ptr %p, i64 20
+    %v20 = load volatile double, ptr %p20, align 8
+    %p21 = getelementptr double, ptr %p, i64 21
+    %v21 = load volatile double, ptr %p21, align 8
+    %p22 = getelementptr double, ptr %p, i64 22
+    %v22 = load volatile double, ptr %p22, align 8
+    %p23 = getelementptr double, ptr %p, i64 23
+    %v23 = load volatile double, ptr %p23, align 8
+    %p24 = getelementptr double, ptr %p, i64 24
+    %v24 = load volatile double, ptr %p24, align 8
+    %p25 = getelementptr double, ptr %p, i64 25
+    %v25 = load volatile double, ptr %p25, align 8
+    %p26 = getelementptr double, ptr %p, i64 26
+    %v26 = load volatile double, ptr %p26, align 8
+    %p27 = getelementptr double, ptr %p, i64 27
+    %v27 = load volatile double, ptr %p27, align 8
+    %p28 = getelementptr double, ptr %p, i64 28
+    %v28 = load volatile double, ptr %p28, align 8
+    %p29 = getelementptr double, ptr %p, i64 29
+    %v29 = load volatile double, ptr %p29, align 8
+    %p30 = getelementptr double, ptr %p, i64 30
+    %v30 = load volatile double, ptr %p30, align 8
+    %p31 = getelementptr double, ptr %p, i64 31
+    %v31 = load volatile double, ptr %p31, align 8
+    %p32 = getelementptr double, ptr %p, i64 32
+    %v32 = load volatile double, ptr %p32, align 8
+    %p33 = getelementptr double, ptr %p, i64 33
+    %v33 = load volatile double, ptr %p33, align 8
+    %p34 = getelementptr double, ptr %p, i64 34
+    %v34 = load volatile double, ptr %p34, align 8
+    %p35 = getelementptr double, ptr %p, i64 35
+    %v35 = load volatile double, ptr %p35, align 8
+    %p36 = getelementptr double, ptr %p, i64 36
+    %v36 = load volatile double, ptr %p36, align 8
+    %p37 = getelementptr double, ptr %p, i64 37
+    %v37 = load volatile double, ptr %p37, align 8
+    %p38 = getelementptr double, ptr %p, i64 38
+    %v38 = load volatile double, ptr %p38, align 8
+    %p39 = getelementptr double, ptr %p, i64 39
+    %v39 = load volatile double, ptr %p39, align 8
+    %key = load volatile double, ptr %p, align 8
+    %sumfirst = fmul double %v0, %key
+    %sumx0 = fmul double %v1, %key
+    %sum0 = fadd double %sumfirst, %sumx0
+    %sumx1 = fmul double %v2, %key
+    %sum1 = fadd double %sum0, %sumx1
+    %sumx2 = fmul double %v3, %key
+    %sum2 = fadd double %sum1, %sumx2
+    %sumx3 = fmul double %v4, %key
+    %sum3 = fadd double %sum2, %sumx3
+    %sumx4 = fmul double %v5, %key
+    %sum4 = fadd double %sum3, %sumx4
+    %sumx5 = fmul double %v6, %key
+    %sum5 = fadd double %sum4, %sumx5
+    %sumx6 = fmul double %v7, %key
+    %sum6 = fadd double %sum5, %sumx6
+    %sumx7 = fmul double %v8, %key
+    %sum7 = fadd double %sum6, %sumx7
+    %sumx8 = fmul double %v9, %key
+    %sum8 = fadd double %sum7, %sumx8
+    %sumx9 = fmul double %v10, %key
+    %sum9 = fadd double %sum8, %sumx9
+    %sumx10 = fmul double %v11, %key
+    %sum10 = fadd double %sum9, %sumx10
+    %sumx11 = fmul double %v12, %key
+    %sum11 = fadd double %sum10, %sumx11
+    %sumx12 = fmul double %v13, %key
+    %sum12 = fadd double %sum11, %sumx12
+    %sumx13 = fmul double %v14, %key
+    %sum13 = fadd double %sum12, %sumx13
+    %sumx14 = fmul double %v15, %key
+    %sum14 = fadd double %sum13, %sumx14
+    %sumx15 = fmul double %v16, %key
+    %sum15 = fadd double %sum14, %sumx15
+    %sumx16 = fmul double %v17, %key
+    %sum16 = fadd double %sum15, %sumx16
+    %sumx17 = fmul double %v18, %key
+    %sum17 = fadd double %sum16, %sumx17
+    %sumx18 = fmul double %v19, %key
+    %sum18 = fadd double %sum17, %sumx18
+    %sumx19 = fmul double %v20, %key
+    %sum19 = fadd double %sum18, %sumx19
+    %sumx20 = fmul double %v21, %key
+    %sum20 = fadd double %sum19, %sumx20
+    %sumx21 = fmul double %v22, %key
+    %sum21 = fadd double %sum20, %sumx21
+    %sumx22 = fmul double %v23, %key
+    %sum22 = fadd double %sum21, %sumx22
+    %sumx23 = fmul double %v24, %key
+    %sum23 = fadd double %sum22, %sumx23
+    %sumx24 = fmul double %v25, %key
+    %sum24 = fadd double %sum23, %sumx24
+    %sumx25 = fmul double %v26, %key
+    %sum25 = fadd double %sum24, %sumx25
+    %sumx26 = fmul double %v27, %key
+    %sum26 = fadd double %sum25, %sumx26
+    %sumx27 = fmul double %v28, %key
+    %sum27 = fadd double %sum26, %sumx27
+    %sumx28 = fmul double %v29, %key
+    %sum28 = fadd double %sum27, %sumx28
+    %sumx29 = fmul double %v30, %key
+    %sum29 = fadd double %sum28, %sumx29
+    %sumx30 = fmul double %v31, %key
+    %sum30 = fadd double %sum29, %sumx30
+    %sumx31 = fmul double %v32, %key
+    %sum31 = fadd double %sum30, %sumx31
+    %sumx32 = fmul double %v33, %key
+    %sum32 = fadd double %sum31, %sumx32
+    %sumx33 = fmul double %v34, %key
+    %sum33 = fadd double %sum32, %sumx33
+    %sumx34 = fmul double %v35, %key
+    %sum34 = fadd double %sum33, %sumx34
+    %sumx35 = fmul double %v36, %key
+    %sum35 = fadd double %sum34, %sumx35
+    %sumx36 = fmul double %v37, %key
+    %sum36 = fadd double %sum35, %sumx36
+    %sumx37 = fmul double %v38, %key
+    %sum37 = fadd double %sum36, %sumx37
+    %sumx38 = fmul double %v39, %key
+    %sum38 = fadd double %sum37, %sumx38
+    ret double %sum38
+  }
+...
+---
+name:            work
+alignment:       1
+exposesReturnsTwice: false
+legalized:       false
+regBankSelected: false
+selected:        false
+failedISel:      false
+tracksRegLiveness: true
+hasWinCFI:       false
+noPhis:          false
+isSSA:           true
+noVRegs:         false
+hasFakeUses:     false
+callsEHReturn:   false
+callsUnwindInit: false
+hasEHContTarget: false
+hasEHScopes:     false
+hasEHFunclets:   false
+isOutlined:      false
+debugInstrRef:   true
+failsVerification: false
+tracksDebugUserValues: false
+registers:
+  - { id: 0, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 1, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 2, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 3, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 4, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 5, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 6, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 7, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 8, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 9, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 10, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 11, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 12, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 13, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 14, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 15, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 16, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 17, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 18, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 19, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 20, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 21, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 22, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 23, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 24, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 25, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 26, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 27, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 28, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 29, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 30, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 31, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 32, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 33, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 34, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 35, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 36, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 37, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 38, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 39, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 40, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 41, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 42, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 43, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 44, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 45, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 46, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 47, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 48, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 49, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 50, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 51, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 52, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 53, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 54, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 55, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 56, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 57, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 58, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 59, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 60, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 61, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 62, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 63, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 64, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 65, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 66, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 67, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 68, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 69, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 70, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 71, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 72, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 73, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 74, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 75, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 76, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 77, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 78, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 79, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 80, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 81, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 82, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 83, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 84, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 85, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 86, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 87, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 88, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 89, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 90, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 91, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 92, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 93, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 94, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 95, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 96, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 97, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 98, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 99, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 100, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 101, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 102, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 103, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 104, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 105, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 106, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 107, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 108, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 109, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 110, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 111, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 112, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 113, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 114, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 115, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 116, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 117, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 118, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 119, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 120, class: fr64, preferred-register: '', flags: [  ] }
+  - { id: 121, class: fr64, preferred-register: '', flags: [  ] }
+liveins:
+  - { reg: '$rcx', virtual-reg: '%0' }
+frameInfo:
+  isFrameAddressTaken: false
+  isReturnAddressTaken: false
+  hasStackMap:     false
+  hasPatchPoint:   false
+  stackSize:       0
+  offsetAdjustment: 0
+  maxAlignment:    8
+  adjustsStack:    false
+  hasCalls:        false
+  framePointerPolicy: none
+  stackProtector:  ''
+  functionContext: ''
+  maxCallFrameSize: 4294967295
+  cvBytesOfCalleeSavedRegisters: 0
+  hasOpaqueSPAdjustment: false
+  hasVAStart:      false
+  hasMustTailInVarArgFunc: false
+  hasTailCall:     false
+  isCalleeSavedInfoValid: false
+  localFrameSize:  0
+fixedStack:      []
+stack:           []
+entry_values:    []
+callSites:       []
+debugValueSubstitutions: []
+constants:       []
+machineFunctionInfo:
+  amxProgModel:    None
+body:             |
+  bb.0.entry:
+    liveins: $rcx
+
+    %0:gr64 = COPY $rcx
+    %2:fr64 = MOVSDrm_alt %0, 1, $noreg, 0, $noreg :: (volatile load (s64) from %ir.p01)
+    %3:fr64 = MOVSDrm_alt %0, 1, $noreg, 8, $noreg :: (volatile load (s64) from %ir.p1)
+    %4:fr64 = MOVSDrm_alt %0, 1, $noreg, 16, $noreg :: (volatile load (s64) from %ir.p2)
+    %5:fr64 = MOVSDrm_alt %0, 1, $noreg, 24, $noreg :: (volatile load (s64) from %ir.p3)
+    %6:fr64 = MOVSDrm_alt %0, 1, $noreg, 32, $noreg :: (volatile load (s64) from %ir.p4)
+    %7:fr64 = MOVSDrm_alt %0, 1, $noreg, 40, $noreg :: (volatile load (s64) from %ir.p5)
+    %8:fr64 = MOVSDrm_alt %0, 1, $noreg, 48, $noreg :: (volatile load (s64) from %ir.p6)
+    %9:fr64 = MOVSDrm_alt %0, 1, $noreg, 56, $noreg :: (volatile load (s64) from %ir.p7)
+    %10:fr64 = MOVSDrm_alt %0, 1, $noreg, 64, $noreg :: (volatile load (s64) from %ir.p8)
+    %11:fr64 = MOVSDrm_alt %0, 1, $noreg, 72, $noreg :: (volatile load (s64) from %ir.p9)
+    %12:fr64 = MOVSDrm_alt %0, 1, $noreg, 80, $noreg :: (volatile load (s64) from %ir.p10)
+    %13:fr64 = MOVSDrm_alt %0, 1, $noreg, 88, $noreg :: (volatile load (s64) from %ir.p11)
+    %14:fr64 = MOVSDrm_alt %0, 1, $noreg, 96, $noreg :: (volatile load (s64) from %ir.p12)
+    %15:fr64 = MOVSDrm_alt %0, 1, $noreg, 104, $noreg :: (volatile load (s64) from %ir.p13)
+    %16:fr64 = MOVSDrm_alt %0, 1, $noreg, 112, $noreg :: (volatile load (s64) from %ir.p14)
+    %17:fr64 = MOVSDrm_alt %0, 1, $noreg, 120, $noreg :: (volatile load (s64) from %ir.p15)
+    %18:fr64 = MOVSDrm_alt %0, 1, $noreg, 128, $noreg :: (volatile load (s64) from %ir.p16)
+    %19:fr64 = MOVSDrm_alt %0, 1, $noreg, 136, $noreg :: (volatile load (s64) from %ir.p17)
+    %20:fr64 = MOVSDrm_alt %0, 1, $noreg, 144, $noreg :: (volatile load (s64) from %ir.p18)
+    %21:fr64 = MOVSDrm_alt %0, 1, $noreg, 152, $noreg :: (volatile load (s64) from %ir.p19)
+    %22:fr64 = MOVSDrm_alt %0, 1, $noreg, 160, $noreg :: (volatile load (s64) from %ir.p20)
+    %23:fr64 = MOVSDrm_alt %0, 1, $noreg, 168, $noreg :: (volatile load (s64) from %ir.p21)
+    %24:fr64 = MOVSDrm_alt %0, 1, $noreg, 176, $noreg :: (volatile load (s64) from %ir.p22)
+    %25:fr64 = MOVSDrm_alt %0, 1, $noreg, 184, $noreg :: (volatile load (s64) from %ir.p23)
+    %26:fr64 = MOVSDrm_alt %0, 1, $noreg, 192, $noreg :: (volatile load (s64) from %ir.p24)
+    %27:fr64 = MOVSDrm_alt %0, 1, $noreg, 200, $noreg :: (volatile load (s64) from %ir.p25)
+    %28:fr64 = MOVSDrm_alt %0, 1, $noreg, 208, $noreg :: (volatile load (s64) from %ir.p26)
+    %29:fr64 = MOVSDrm_alt %0, 1, $noreg, 216, $noreg :: (volatile load (s64) from %ir.p27)
+    %30:fr64 = MOVSDrm_alt %0, 1, $noreg, 224, $noreg :: (volatile load (s64) from %ir.p28)
+    %31:fr64 = MOVSDrm_alt %0, 1, $noreg, 232, $noreg :: (volatile load (s64) from %ir.p29)
+    %32:fr64 = MOVSDrm_alt %0, 1, $noreg, 240, $noreg :: (volatile load (s64) from %ir.p30)
+    %33:fr64 = MOVSDrm_alt %0, 1, $noreg, 248, $noreg :: (volatile load (s64) from %ir.p31)
+    %34:fr64 = MOVSDrm_alt %0, 1, $noreg, 256, $noreg :: (volatile load (s64) from %ir.p32)
+    %35:fr64 = MOVSDrm_alt %0, 1, $noreg, 264, $noreg :: (volatile load (s64) from %ir.p33)
+    %36:fr64 = MOVSDrm_alt %0, 1, $noreg, 272, $noreg :: (volatile load (s64) from %ir.p34)
+    %37:fr64 = MOVSDrm_alt %0, 1, $noreg, 280, $noreg :: (volatile load (s64) from %ir.p35)
+    %38:fr64 = MOVSDrm_alt %0, 1, $noreg, 288, $noreg :: (volatile load (s64) from %ir.p36)
+    %39:fr64 = MOVSDrm_alt %0, 1, $noreg, 296, $noreg :: (volatile load (s64) from %ir.p37)
+    %40:fr64 = MOVSDrm_alt %0, 1, $noreg, 304, $noreg :: (volatile load (s64) from %ir.p38)
+    %41:fr64 = MOVSDrm_alt %0, 1, $noreg, 312, $noreg :: (volatile load (s64) from %ir.p39)
+    %42:fr64 = MOVSDrm_alt %0, 1, $noreg, 0, $noreg :: (volatile load (s64) from %ir.p)
+    %43:fr64 = nofpexcept MULSDrr %2, %42, implicit $mxcsr
+    %44:fr64 = nofpexcept MULSDrr %3, %42, implicit $mxcsr
+    %45:fr64 = nofpexcept ADDSDrr %43, killed %44, implicit $mxcsr
+    %46:fr64 = nofpexcept MULSDrr %4, %42, implicit $mxcsr
+    %47:fr64 = nofpexcept ADDSDrr %45, killed %46, implicit $mxcsr
+    %48:fr64 = nofpexcept MULSDrr %5, %42, implicit $mxcsr
+    %49:fr64 = nofpexcept ADDSDrr %47, killed %48, implicit $mxcsr
+    %50:fr64 = nofpexcept MULSDrr %6, %42, implicit $mxcsr
+    %51:fr64 = nofpexcept ADDSDrr %49, killed %50, implicit $mxcsr
+    %52:fr64 = nofpexcept MULSDrr %7, %42, implicit $mxcsr
+    %53:fr64 = nofpexcept ADDSDrr %51, killed %52, implicit $mxcsr
+    %54:fr64 = nofpexcept MULSDrr %8, %42, implicit $mxcsr
+    %55:fr64 = nofpexcept ADDSDrr %53, killed %54, implicit $mxcsr
+    %56:fr64 = nofpexcept MULSDrr %9, %42, implicit $mxcsr
+    %57:fr64 = nofpexcept ADDSDrr %55, killed %56, implicit $mxcsr
+    %58:fr64 = nofpexcept MULSDrr %10, %42, implicit $mxcsr
+    %59:fr64 = nofpexcept ADDSDrr %57, killed %58, implicit $mxcsr
+    %60:fr64 = nofpexcept MULSDrr %11, %42, implicit $mxcsr
+    %61:fr64 = nofpexcept ADDSDrr %59, killed %60, implicit $mxcsr
+    %62:fr64 = nofpexcept MULSDrr %12, %42, implicit $mxcsr
+    %63:fr64 = nofpexcept ADDSDrr %61, killed %62, implicit $mxcsr
+    %64:fr64 = nofpexcept MULSDrr %13, %42, implicit $mxcsr
+    %65:fr64 = nofpexcept ADDSDrr %63, killed %64, implicit $mxcsr
+    %66:fr64 = nofpexcept MULSDrr %14, %42, implicit $mxcsr
+    %67:fr64 = nofpexcept ADDSDrr %65, killed %66, implicit $mxcsr
+    %68:fr64 = nofpexcept MULSDrr %15, %42, implicit $mxcsr
+    %69:fr64 = nofpexcept ADDSDrr %67, killed %68, implicit $mxcsr
+    %70:fr64 = nofpexcept MULSDrr %16, %42, implicit $mxcsr
+    %71:fr64 = nofpexcept ADDSDrr %69, killed %70, implicit $mxcsr
+    %72:fr64 = nofpexcept MULSDrr %17, %42, implicit $mxcsr
+    %73:fr64 = nofpexcept ADDSDrr %71, killed %72, implicit $mxcsr
+    %74:fr64 = nofpexcept MULSDrr %18, %42, implicit $mxcsr
+    %75:fr64 = nofpexcept ADDSDrr %73, killed %74, implicit $mxcsr
+    %76:fr64 = nofpexcept MULSDrr %19, %42, implicit $mxcsr
+    %77:fr64 = nofpexcept ADDSDrr %75, killed %76, implicit $mxcsr
+    %78:fr64 = nofpexcept MULSDrr %20, %42, implicit $mxcsr
+    %79:fr64 = nofpexcept ADDSDrr %77, killed %78, implicit $mxcsr
+    %80:fr64 = nofpexcept MULSDrr %21, %42, implicit $mxcsr
+    %81:fr64 = nofpexcept ADDSDrr %79, killed %80, implicit $mxcsr
+    %82:fr64 = nofpexcept MULSDrr %22, %42, implicit $mxcsr
+    %83:fr64 = nofpexcept ADDSDrr %81, killed %82, implicit $mxcsr
+    %84:fr64 = nofpexcept MULSDrr %23, %42, implicit $mxcsr
+    %85:fr64 = nofpexcept ADDSDrr %83, killed %84, implicit $mxcsr
+    %86:fr64 = nofpexcept MULSDrr %24, %42, implicit $mxcsr
+    %87:fr64 = nofpexcept ADDSDrr %85, killed %86, implicit $mxcsr
+    %88:fr64 = nofpexcept MULSDrr %25, %42, implicit $mxcsr
+    %89:fr64 = nofpexcept ADDSDrr %87, killed %88, implicit $mxcsr
+    %90:fr64 = nofpexcept MULSDrr %26, %42, implicit $mxcsr
+    %91:fr64 = nofpexcept ADDSDrr %89, killed %90, implicit $mxcsr
+    %92:fr64 = nofpexcept MULSDrr %27, %42, implicit $mxcsr
+    %93:fr64 = nofpexcept ADDSDrr %91, killed %92, implicit $mxcsr
+    %94:fr64 = nofpexcept MULSDrr %28, %42, implicit $mxcsr
+    %95:fr64 = nofpexcept ADDSDrr %93, killed %94, implicit $mxcsr
+    %96:fr64 = nofpexcept MULSDrr %29, %42, implicit $mxcsr
+    %97:fr64 = nofpexcept ADDSDrr %95, killed %96, implicit $mxcsr
+    %98:fr64 = nofpexcept MULSDrr %30, %42, implicit $mxcsr
+    %99:fr64 = nofpexcept ADDSDrr %97, killed %98, implicit $mxcsr
+    %100:fr64 = nofpexcept MULSDrr %31, %42, implicit $mxcsr
+    %101:fr64 = nofpexcept ADDSDrr %99, killed %100, implicit $mxcsr
+    %102:fr64 = nofpexcept MULSDrr %32, %42, implicit $mxcsr
+    %103:fr64 = nofpexcept ADDSDrr %101, killed %102, implicit $mxcsr
+    %104:fr64 = nofpexcept MULSDrr %33, %42, implicit $mxcsr
+    %105:fr64 = nofpexcept ADDSDrr %103, killed %104, implicit $mxcsr
+    %106:fr64 = nofpexcept MULSDrr %34, %42, implicit $mxcsr
+    %107:fr64 = nofpexcept ADDSDrr %105, killed %106, implicit $mxcsr
+    %108:fr64 = nofpexcept MULSDrr %35, %42, implicit $mxcsr
+    %109:fr64 = nofpexcept ADDSDrr %107, killed %108, implicit $mxcsr
+    %110:fr64 = nofpexcept MULSDrr %36, %42, implicit $mxcsr
+    %111:fr64 = nofpexcept ADDSDrr %109, killed %110, implicit $mxcsr
+    %112:fr64 = nofpexcept MULSDrr %37, %42, implicit $mxcsr
+    %113:fr64 = nofpexcept ADDSDrr %111, killed %112, implicit $mxcsr
+    %114:fr64 = nofpexcept MULSDrr %38, %42, implicit $mxcsr
+    %115:fr64 = nofpexcept ADDSDrr %113, killed %114, implicit $mxcsr
+    %116:fr64 = nofpexcept MULSDrr %39, %42, implicit $mxcsr
+    %117:fr64 = nofpexcept ADDSDrr %115, killed %116, implicit $mxcsr
+    %118:fr64 = nofpexcept MULSDrr %40, %42, implicit $mxcsr
+    %119:fr64 = nofpexcept ADDSDrr %117, killed %118, implicit $mxcsr
+    %120:fr64 = nofpexcept MULSDrr %41, %42, implicit $mxcsr
+    %121:fr64 = nofpexcept ADDSDrr %119, killed %120, implicit $mxcsr
+    $xmm0 = COPY %121
+    RET 0, $xmm0
+...

@@ -3,3 +3,4 @@ build/
 *.trace
 *.log
 benchmark-results.json
+__pycache__/

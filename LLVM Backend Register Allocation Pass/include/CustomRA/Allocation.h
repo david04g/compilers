@@ -3,6 +3,7 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/CodeGen/Register.h"
+#include "llvm/CodeGen/TargetRegisterInfo.h"
 #include "llvm/MC/MCRegister.h"
 #include "llvm/Pass.h"
 
@@ -14,7 +15,6 @@ class LiveRegMatrix;
 class MachineFunction;
 class MachineLoopInfo;
 class MachineRegisterInfo;
-class TargetRegisterClass;
 class TargetRegisterInfo;
 class VirtRegMap;
 } // namespace llvm
@@ -38,6 +38,7 @@ struct VirtRegStats {
   unsigned ApproxLength = 0;
   double SpillCost = 0.0;
   bool SplitCandidate = false;
+  bool Spillable = true;
 };
 
 struct AllocationDecision {

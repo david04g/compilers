@@ -21,9 +21,14 @@ backend allocation slot.
    virtual registers, fixed physical live ranges, or call regmasks.
 6. Assign legal registers through `LiveRegMatrix::assign`, which updates
    `VirtRegMap` and the matrix consistently for `virtregrewriter`.
-7. If no physical register is available, report a fatal unsupported-spill
-   diagnostic after writing trace output; v1 intentionally does not emit
-   incomplete stack-slot-only spill mappings.
+7. If no physical register is available, unassign the partial plan from the
+   live register matrix and use `LiveRangeEdit` with LLVM's InlineSpiller to
+   spill that interval. This updates instructions, stack slots, and liveness.
+8. Record the original value, frame index (or rematerialization), and newly
+   created temporaries. Rebuild the analysis and allocation plan from scratch.
+   Unspillable short temporaries get highest priority on the next round.
+9. Once allocation succeeds, run the spiller's cleanup and remove dead
+   rematerialized definitions before LLVM's normal register rewriting.
 
 ## Debug Outputs
 
@@ -36,9 +41,15 @@ backend allocation slot.
 
 ## Prototype Boundaries
 
-The pass performs deterministic physical-register selection and records
-spill-required and split-candidate events. It does not claim spill reduction
-until real spill insertion/splitting is implemented and benchmarked. Full
-production-quality rematerialization, eviction, aggressive interval splitting,
-and iterative spill-code repair should be added after the lit tests run against
-a concrete LLVM installation.
+The pass uses a deterministic spill-current-value policy, not a custom eviction
+or optimal splitting algorithm. The graph is rebuilt after every spill instead
+of incrementally repaired; this is easy to follow but adds compile work. LLVM's
+spiller may fold memory operands and rematerialize values, so not every spill
+event must create a new stack slot. Traces distinguish these cases.
+
+An unspillable interval that cannot fit produces a fatal diagnostic; the pass
+does not silently discard values. A 10,000-round limit bounds retrying. The
+initial priority formula still includes a split-candidate bonus, which is only
+a heuristic; no custom region splitting is implemented. Local microbenchmarks
+show more stack traffic and slower generated code than LLVM Greedy. The current
+milestone is correct spill insertion with inspectable output.

@@ -15,6 +15,9 @@ using namespace llvm;
 namespace customra {
 
 double computePriority(const VirtRegStats &Stats) {
+  // Reload/store temporaries must get registers before long-lived values.
+  if (!Stats.Spillable)
+    return 1.0e100;
   double UsePressure = static_cast<double>(Stats.LoopWeightedUses + Stats.Defs);
   double LengthPenalty = static_cast<double>(Stats.ApproxLength) * 0.05;
   double SplitBonus = Stats.SplitCandidate ? 2.0 : 0.0;
@@ -65,8 +68,7 @@ AllocationResult HeuristicAllocator::allocate(
     } else {
       Decision.Spilled = true;
       Decision.FailureReason =
-          "no legal physical register; spilling/splitting is not implemented "
-          "in this correctness-first out-of-tree prototype";
+          "no legal physical register; stack spill requested";
       Result.Failed = true;
       Result.FailedVirtReg = S->VirtReg;
       Result.FailureReason = Decision.FailureReason;
@@ -83,8 +85,8 @@ AllocationResult HeuristicAllocator::allocate(
 
 MCRegister HeuristicAllocator::selectPhysicalRegister(
     MachineFunction &MF, LiveIntervals &LIS, LiveRegMatrix &Matrix,
-    const InterferenceGraph &Graph,
-    const AllocationPlan &Plan, const VirtRegStats &Stats) const {
+    const InterferenceGraph &Graph, const AllocationPlan &Plan,
+    const VirtRegStats &Stats) const {
   if (!Stats.RegClass)
     return MCRegister();
 

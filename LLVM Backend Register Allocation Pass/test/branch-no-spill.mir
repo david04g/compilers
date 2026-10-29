@@ -1,5 +1,5 @@
-# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load %custom_ra -regalloc=custom-ra -custom-ra-trace=%t.trace -stop-after=virtregrewriter %s -o - | %FileCheck %s
-# RUN: %FileCheck --check-prefix=TRACE %s < %t.trace
+# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -custom-ra-trace="%t.trace" -stop-after=virtregrewriter "%s" -o - | %FileCheck "%s"
+# RUN: %FileCheck --check-prefix=TRACE "%s" < "%t.trace"
 
 # CHECK-LABEL: name: branch_no_spill
 # CHECK-NOT: %{{[0-9]+}}:

@@ -1,10 +1,13 @@
-# RUN: not %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load %custom_ra -regalloc=custom-ra -custom-ra-trace=%t.trace -stop-after=virtregrewriter %s -o - 2>&1 | %FileCheck --check-prefix=ERR %s
-# RUN: %FileCheck --check-prefix=TRACE %s < %t.trace
+# RUN: rm -f "%t.trace"
+# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -custom-ra-trace="%t.trace" -stop-after=virtregrewriter "%s" -o - | %FileCheck "%s"
+# RUN: %FileCheck --check-prefix=TRACE "%s" < "%t.trace"
 
-# ERR: custom-ra: unable to allocate
-# ERR: spilling/splitting is not implemented
-# TRACE: allocation:
-# TRACE: spill-required
+# CHECK-LABEL: name: forced_pressure
+# CHECK: stack:
+# CHECK: type: spill-slot
+# TRACE: spill: round=
+# TRACE-SAME: stack-slot=fi#
+# TRACE: allocation-complete:
 
 --- |
   define i64 @forced_pressure(i64 %a) {

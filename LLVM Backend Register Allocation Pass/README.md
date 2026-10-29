@@ -62,9 +62,30 @@ The first milestone is a deterministic X86-oriented allocator prototype. It
 uses LLVM CodeGen analyses for live intervals, register classes, reserved
 registers, virtual register mapping, and `LiveRegMatrix` legality checks.
 
-This version is correctness-first: it assigns only virtual registers that have a
-legal physical register according to LLVM's live register matrix. If allocation
-would require spilling or live-range splitting, it emits a trace entry and stops
-with a fatal diagnostic instead of producing invalid MIR. Full spill insertion,
-eviction, and live-range splitting remain future work that should be built
-against a concrete LLVM tree and validated with `-verify-machineinstrs`.
+This version supports a simple, traceable stack-spilling policy: allocate until
+a value does not fit, spill that value with LLVM's InlineSpiller, recompute
+liveness and interference, and retry. Spill-generated unspillable temporaries
+receive highest priority. The trace records each value, stack slot, replacement
+temporaries, and the final number of rounds. LLVM handles target-specific spill
+instructions, memory operand folding, and optional rematerialization.
+
+This policy favors clarity over performance. It does not implement custom
+eviction or region-based splitting and can fail on unspillable intervals; a
+10,000-round limit prevents endless retries. Tested with LLVM 23.1.4 on Windows
+x86-64. See `docs/design.md` and `docs/benchmark-report.md` for details.
+
+## Executable correctness and performance tests
+
+In addition to the MIR/lit suite, run:
+
+```text
+python scripts/test_spilling.py --llc /path/to/llc --clang /path/to/clang --plugin /path/to/CustomRegAlloc.dll --output spill-results --repeats 5
+```
+
+This generates 11 workloads, compares Greedy and custom-ra against independent
+expected results, verifies actual stack accesses, and saves traces, rewritten
+MIR, assembly, raw measurements, and native execution output. Coverage includes
+register pressure, calls, branches, loops, 32-bit wraparound, and floating-point
+values. Compile timing disables trace output. The synthetic benchmarks show a
+correctness improvement over the previous rejection behavior, not a speedup
+over LLVM Greedy.

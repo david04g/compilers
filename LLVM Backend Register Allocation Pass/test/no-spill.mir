@@ -1,4 +1,4 @@
-# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load %custom_ra -regalloc=custom-ra -stop-after=virtregrewriter %s -o - | %FileCheck %s
+# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -stop-after=virtregrewriter "%s" -o - | %FileCheck "%s"
 
 # CHECK-LABEL: name: no_spill
 # CHECK-NOT: %{{[0-9]+}}:

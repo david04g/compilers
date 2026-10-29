@@ -1,0 +1,295 @@
+# RUN: rm -f "%t.trace"
+# RUN: %llc -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -custom-ra-trace="%t.trace" -start-after=finalize-isel -stop-after=virtregrewriter "%s" -o "%t.mir"
+# RUN: %FileCheck --check-prefix=TRACE "%s" < "%t.trace"
+# RUN: %FileCheck --check-prefix=MIR "%s" < "%t.mir"
+# RUN: %llc -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -start-after=finalize-isel -stop-after=virtregrewriter "%s" -o "%t.second.mir"
+# RUN: diff "%t.mir" "%t.second.mir"
+# TRACE: spill: round=
+# TRACE-SAME: stack-slot=fi#
+# TRACE: allocation-complete:
+# MIR: type: spill-slot
+# MIR: body:
+# MIR-NOT: %{{[0-9]+}}:
+# MIR: %stack.
+
+--- |
+  ; Generated pressure regression
+  source_filename = "pressure.ll"
+  target datalayout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+
+  declare void @barrier()
+
+  define i64 @work(ptr %p, i64 %count) {
+  entry:
+    %p01 = bitcast ptr %p to ptr
+    %v0 = load volatile i64, ptr %p01, align 8
+    %p1 = getelementptr i64, ptr %p, i64 1
+    %v1 = load volatile i64, ptr %p1, align 8
+    %p2 = getelementptr i64, ptr %p, i64 2
+    %v2 = load volatile i64, ptr %p2, align 8
+    %p3 = getelementptr i64, ptr %p, i64 3
+    %v3 = load volatile i64, ptr %p3, align 8
+    %p4 = getelementptr i64, ptr %p, i64 4
+    %v4 = load volatile i64, ptr %p4, align 8
+    %p5 = getelementptr i64, ptr %p, i64 5
+    %v5 = load volatile i64, ptr %p5, align 8
+    %p6 = getelementptr i64, ptr %p, i64 6
+    %v6 = load volatile i64, ptr %p6, align 8
+    %p7 = getelementptr i64, ptr %p, i64 7
+    %v7 = load volatile i64, ptr %p7, align 8
+    %p8 = getelementptr i64, ptr %p, i64 8
+    %v8 = load volatile i64, ptr %p8, align 8
+    %p9 = getelementptr i64, ptr %p, i64 9
+    %v9 = load volatile i64, ptr %p9, align 8
+    %p10 = getelementptr i64, ptr %p, i64 10
+    %v10 = load volatile i64, ptr %p10, align 8
+    %p11 = getelementptr i64, ptr %p, i64 11
+    %v11 = load volatile i64, ptr %p11, align 8
+    %p12 = getelementptr i64, ptr %p, i64 12
+    %v12 = load volatile i64, ptr %p12, align 8
+    %p13 = getelementptr i64, ptr %p, i64 13
+    %v13 = load volatile i64, ptr %p13, align 8
+    %p14 = getelementptr i64, ptr %p, i64 14
+    %v14 = load volatile i64, ptr %p14, align 8
+    %p15 = getelementptr i64, ptr %p, i64 15
+    %v15 = load volatile i64, ptr %p15, align 8
+    %p16 = getelementptr i64, ptr %p, i64 16
+    %v16 = load volatile i64, ptr %p16, align 8
+    %p17 = getelementptr i64, ptr %p, i64 17
+    %v17 = load volatile i64, ptr %p17, align 8
+    %p18 = getelementptr i64, ptr %p, i64 18
+    %v18 = load volatile i64, ptr %p18, align 8
+    %p19 = getelementptr i64, ptr %p, i64 19
+    %v19 = load volatile i64, ptr %p19, align 8
+    call void @barrier()
+    %key = load volatile i64, ptr %p, align 8
+    %sumfirst = xor i64 %v0, %key
+    %sumx0 = xor i64 %v1, %key
+    %sum0 = add i64 %sumfirst, %sumx0
+    %sumx1 = xor i64 %v2, %key
+    %sum1 = add i64 %sum0, %sumx1
+    %sumx2 = xor i64 %v3, %key
+    %sum2 = add i64 %sum1, %sumx2
+    %sumx3 = xor i64 %v4, %key
+    %sum3 = add i64 %sum2, %sumx3
+    %sumx4 = xor i64 %v5, %key
+    %sum4 = add i64 %sum3, %sumx4
+    %sumx5 = xor i64 %v6, %key
+    %sum5 = add i64 %sum4, %sumx5
+    %sumx6 = xor i64 %v7, %key
+    %sum6 = add i64 %sum5, %sumx6
+    %sumx7 = xor i64 %v8, %key
+    %sum7 = add i64 %sum6, %sumx7
+    %sumx8 = xor i64 %v9, %key
+    %sum8 = add i64 %sum7, %sumx8
+    %sumx9 = xor i64 %v10, %key
+    %sum9 = add i64 %sum8, %sumx9
+    %sumx10 = xor i64 %v11, %key
+    %sum10 = add i64 %sum9, %sumx10
+    %sumx11 = xor i64 %v12, %key
+    %sum11 = add i64 %sum10, %sumx11
+    %sumx12 = xor i64 %v13, %key
+    %sum12 = add i64 %sum11, %sumx12
+    %sumx13 = xor i64 %v14, %key
+    %sum13 = add i64 %sum12, %sumx13
+    %sumx14 = xor i64 %v15, %key
+    %sum14 = add i64 %sum13, %sumx14
+    %sumx15 = xor i64 %v16, %key
+    %sum15 = add i64 %sum14, %sumx15
+    %sumx16 = xor i64 %v17, %key
+    %sum16 = add i64 %sum15, %sumx16
+    %sumx17 = xor i64 %v18, %key
+    %sum17 = add i64 %sum16, %sumx17
+    %sumx18 = xor i64 %v19, %key
+    %sum18 = add i64 %sum17, %sumx18
+    ret i64 %sum18
+  }
+...
+---
+name:            work
+alignment:       1
+exposesReturnsTwice: false
+legalized:       false
+regBankSelected: false
+selected:        false
+failedISel:      false
+tracksRegLiveness: true
+hasWinCFI:       false
+noPhis:          false
+isSSA:           true
+noVRegs:         false
+hasFakeUses:     false
+callsEHReturn:   false
+callsUnwindInit: false
+hasEHContTarget: false
+hasEHScopes:     false
+hasEHFunclets:   false
+isOutlined:      false
+debugInstrRef:   true
+failsVerification: false
+tracksDebugUserValues: false
+registers:
+  - { id: 0, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 1, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 2, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 3, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 4, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 5, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 6, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 7, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 8, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 9, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 10, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 11, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 12, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 13, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 14, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 15, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 16, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 17, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 18, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 19, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 20, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 21, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 22, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 23, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 24, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 25, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 26, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 27, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 28, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 29, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 30, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 31, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 32, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 33, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 34, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 35, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 36, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 37, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 38, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 39, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 40, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 41, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 42, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 43, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 44, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 45, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 46, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 47, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 48, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 49, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 50, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 51, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 52, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 53, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 54, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 55, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 56, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 57, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 58, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 59, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 60, class: gr64, preferred-register: '', flags: [  ] }
+  - { id: 61, class: gr64, preferred-register: '', flags: [  ] }
+liveins:
+  - { reg: '$rcx', virtual-reg: '%0' }
+frameInfo:
+  isFrameAddressTaken: false
+  isReturnAddressTaken: false
+  hasStackMap:     false
+  hasPatchPoint:   false
+  stackSize:       0
+  offsetAdjustment: 0
+  maxAlignment:    8
+  adjustsStack:    true
+  hasCalls:        true
+  framePointerPolicy: none
+  stackProtector:  ''
+  functionContext: ''
+  maxCallFrameSize: 4294967295
+  cvBytesOfCalleeSavedRegisters: 0
+  hasOpaqueSPAdjustment: false
+  hasVAStart:      false
+  hasMustTailInVarArgFunc: false
+  hasTailCall:     false
+  isCalleeSavedInfoValid: false
+  localFrameSize:  0
+fixedStack:      []
+stack:           []
+entry_values:    []
+callSites:       []
+debugValueSubstitutions: []
+constants:       []
+machineFunctionInfo:
+  amxProgModel:    None
+body:             |
+  bb.0.entry:
+    liveins: $rcx
+
+    %0:gr64 = COPY $rcx
+    %2:gr64 = MOV64rm %0, 1, $noreg, 0, $noreg :: (volatile load (s64) from %ir.p01)
+    %3:gr64 = MOV64rm %0, 1, $noreg, 8, $noreg :: (volatile load (s64) from %ir.p1)
+    %4:gr64 = MOV64rm %0, 1, $noreg, 16, $noreg :: (volatile load (s64) from %ir.p2)
+    %5:gr64 = MOV64rm %0, 1, $noreg, 24, $noreg :: (volatile load (s64) from %ir.p3)
+    %6:gr64 = MOV64rm %0, 1, $noreg, 32, $noreg :: (volatile load (s64) from %ir.p4)
+    %7:gr64 = MOV64rm %0, 1, $noreg, 40, $noreg :: (volatile load (s64) from %ir.p5)
+    %8:gr64 = MOV64rm %0, 1, $noreg, 48, $noreg :: (volatile load (s64) from %ir.p6)
+    %9:gr64 = MOV64rm %0, 1, $noreg, 56, $noreg :: (volatile load (s64) from %ir.p7)
+    %10:gr64 = MOV64rm %0, 1, $noreg, 64, $noreg :: (volatile load (s64) from %ir.p8)
+    %11:gr64 = MOV64rm %0, 1, $noreg, 72, $noreg :: (volatile load (s64) from %ir.p9)
+    %12:gr64 = MOV64rm %0, 1, $noreg, 80, $noreg :: (volatile load (s64) from %ir.p10)
+    %13:gr64 = MOV64rm %0, 1, $noreg, 88, $noreg :: (volatile load (s64) from %ir.p11)
+    %14:gr64 = MOV64rm %0, 1, $noreg, 96, $noreg :: (volatile load (s64) from %ir.p12)
+    %15:gr64 = MOV64rm %0, 1, $noreg, 104, $noreg :: (volatile load (s64) from %ir.p13)
+    %16:gr64 = MOV64rm %0, 1, $noreg, 112, $noreg :: (volatile load (s64) from %ir.p14)
+    %17:gr64 = MOV64rm %0, 1, $noreg, 120, $noreg :: (volatile load (s64) from %ir.p15)
+    %18:gr64 = MOV64rm %0, 1, $noreg, 128, $noreg :: (volatile load (s64) from %ir.p16)
+    %19:gr64 = MOV64rm %0, 1, $noreg, 136, $noreg :: (volatile load (s64) from %ir.p17)
+    %20:gr64 = MOV64rm %0, 1, $noreg, 144, $noreg :: (volatile load (s64) from %ir.p18)
+    %21:gr64 = MOV64rm %0, 1, $noreg, 152, $noreg :: (volatile load (s64) from %ir.p19)
+    ADJCALLSTACKDOWN64 32, 0, 0, implicit-def dead $rsp, implicit-def dead $eflags, implicit-def dead $ssp, implicit $rsp, implicit $ssp
+    CALL64pcrel32 @barrier, csr_win64, implicit $rsp, implicit $ssp, implicit-def $rsp, implicit-def $ssp
+    ADJCALLSTACKUP64 32, 0, implicit-def dead $rsp, implicit-def dead $eflags, implicit-def dead $ssp, implicit $rsp, implicit $ssp
+    %22:gr64 = MOV64rm %0, 1, $noreg, 0, $noreg :: (volatile load (s64) from %ir.p)
+    %23:gr64 = XOR64rr %2, %22, implicit-def dead $eflags
+    %24:gr64 = XOR64rr %3, %22, implicit-def dead $eflags
+    %25:gr64 = ADD64rr %23, killed %24, implicit-def dead $eflags
+    %26:gr64 = XOR64rr %4, %22, implicit-def dead $eflags
+    %27:gr64 = ADD64rr %25, killed %26, implicit-def dead $eflags
+    %28:gr64 = XOR64rr %5, %22, implicit-def dead $eflags
+    %29:gr64 = ADD64rr %27, killed %28, implicit-def dead $eflags
+    %30:gr64 = XOR64rr %6, %22, implicit-def dead $eflags
+    %31:gr64 = ADD64rr %29, killed %30, implicit-def dead $eflags
+    %32:gr64 = XOR64rr %7, %22, implicit-def dead $eflags
+    %33:gr64 = ADD64rr %31, killed %32, implicit-def dead $eflags
+    %34:gr64 = XOR64rr %8, %22, implicit-def dead $eflags
+    %35:gr64 = ADD64rr %33, killed %34, implicit-def dead $eflags
+    %36:gr64 = XOR64rr %9, %22, implicit-def dead $eflags
+    %37:gr64 = ADD64rr %35, killed %36, implicit-def dead $eflags
+    %38:gr64 = XOR64rr %10, %22, implicit-def dead $eflags
+    %39:gr64 = ADD64rr %37, killed %38, implicit-def dead $eflags
+    %40:gr64 = XOR64rr %11, %22, implicit-def dead $eflags
+    %41:gr64 = ADD64rr %39, killed %40, implicit-def dead $eflags
+    %42:gr64 = XOR64rr %12, %22, implicit-def dead $eflags
+    %43:gr64 = ADD64rr %41, killed %42, implicit-def dead $eflags
+    %44:gr64 = XOR64rr %13, %22, implicit-def dead $eflags
+    %45:gr64 = ADD64rr %43, killed %44, implicit-def dead $eflags
+    %46:gr64 = XOR64rr %14, %22, implicit-def dead $eflags
+    %47:gr64 = ADD64rr %45, killed %46, implicit-def dead $eflags
+    %48:gr64 = XOR64rr %15, %22, implicit-def dead $eflags
+    %49:gr64 = ADD64rr %47, killed %48, implicit-def dead $eflags
+    %50:gr64 = XOR64rr %16, %22, implicit-def dead $eflags
+    %51:gr64 = ADD64rr %49, killed %50, implicit-def dead $eflags
+    %52:gr64 = XOR64rr %17, %22, implicit-def dead $eflags
+    %53:gr64 = ADD64rr %51, killed %52, implicit-def dead $eflags
+    %54:gr64 = XOR64rr %18, %22, implicit-def dead $eflags
+    %55:gr64 = ADD64rr %53, killed %54, implicit-def dead $eflags
+    %56:gr64 = XOR64rr %19, %22, implicit-def dead $eflags
+    %57:gr64 = ADD64rr %55, killed %56, implicit-def dead $eflags
+    %58:gr64 = XOR64rr %20, %22, implicit-def dead $eflags
+    %59:gr64 = ADD64rr %57, killed %58, implicit-def dead $eflags
+    %60:gr64 = XOR64rr %21, %22, implicit-def dead $eflags
+    %61:gr64 = ADD64rr %59, killed %60, implicit-def dead $eflags
+    $rax = COPY %61
+    RET 0, $rax
+...

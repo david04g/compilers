@@ -1,7 +1,7 @@
-# RUN: rm -f %t.dot %t.trace
-# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load %custom_ra -regalloc=custom-ra -custom-ra-debug -custom-ra-dot=%t.dot -custom-ra-trace=%t.trace -stop-after=virtregrewriter %s -o - > %t.out
-# RUN: %FileCheck --check-prefix=TRACE %s < %t.trace
-# RUN: %FileCheck --check-prefix=DOT %s < %t.dot
+# RUN: rm -f "%t.dot" "%t.trace"
+# RUN: %llc -mtriple=x86_64-unknown-linux-gnu -verify-machineinstrs -load "%custom_ra" -regalloc=custom-ra -custom-ra-debug -custom-ra-dot="%t.dot" -custom-ra-trace="%t.trace" -stop-after=virtregrewriter "%s" -o - > "%t.out"
+# RUN: %FileCheck --check-prefix=TRACE "%s" < "%t.trace"
+# RUN: %FileCheck --check-prefix=DOT "%s" < "%t.dot"
 
 # TRACE: custom-ra trace for trace_dot
 # TRACE: allocation:

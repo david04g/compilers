@@ -142,11 +142,11 @@ SmallVector<VirtRegStats, 32> LivenessAnalyzer::collectVirtualRegisterStats(
       const LiveInterval &LI = LIS.getInterval(S.VirtReg);
       S.SegmentCount = LI.segments.size();
       S.ApproxLength = LI.getSize();
+      S.Spillable = LI.isSpillable();
     }
 
-    S.SpillCost =
-        static_cast<double>(S.LoopWeightedUses + S.Defs + 1) /
-        static_cast<double>(std::max(1u, S.ApproxLength));
+    S.SpillCost = static_cast<double>(S.LoopWeightedUses + S.Defs + 1) /
+                  static_cast<double>(std::max(1u, S.ApproxLength));
     S.SplitCandidate = S.SegmentCount > 2 && S.ApproxLength > 16;
   }
 
