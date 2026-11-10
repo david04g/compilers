@@ -1,0 +1,12 @@
+{
+  "rows": 2,
+  "cols": 2,
+  "banks_per_cu": 2,
+  "bank_bytes": 512,
+  "macs_per_cycle": 64,
+  "elements_per_cycle": 16,
+  "gelu_cycles_per_vector": 8,
+  "dram_bytes_per_cycle": 16,
+  "link_bytes_per_cycle": 32,
+  "transfer_startup_cycles": 8
+}
