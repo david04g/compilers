@@ -5,6 +5,7 @@
 #include "mlir/Dialect/Tensor/IR/Tensor.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
+#include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/FormatVariadic.h"
 #include "llvm/Support/raw_ostream.h"
@@ -83,8 +84,8 @@ bool zeroInit(linalg::MatmulOp op) {
 }
 bool mapsAndLoops(linalg::LinalgOp op, ArrayRef<AffineMap> expected,
                   ArrayRef<utils::IteratorType> loops) {
-  return op.getIndexingMapsArray() == expected &&
-         op.getIteratorTypesArray() == loops;
+  return llvm::equal(op.getIndexingMapsArray(), expected) &&
+         llvm::equal(op.getIteratorTypesArray(), loops);
 }
 LogicalResult extract(ModuleOp module, Graph &g) {
   auto funcs = module.getOps<func::FuncOp>();
