@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlir-cuda-fusion"
+version = "0.1.0"
+description = "Memory-aware MLIR scheduling experiments measured on CUDA"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+cuda = ["nvidia-cuda-nvrtc-cu12==12.9.86"]
+
+[tool.setuptools.packages.find]
+where = ["python"]
